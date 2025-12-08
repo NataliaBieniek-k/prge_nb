@@ -3,4 +3,12 @@
   color: $secondary-color;
   height: 100vh;
   font-family: 'Lato';
+
+  @include flex-center;
+
+  .home_button {
+    color: Blue;
+  width: fit-content;
+    margin-top: 2vh;
+  }
 }
