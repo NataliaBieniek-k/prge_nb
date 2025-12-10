@@ -3,8 +3,7 @@ name: Display react app to gh pages
 on:
   push:
     branches:
-
-  main
+      - main
 
 permissions:
   contents: read
@@ -23,35 +22,29 @@ jobs:
         working-directory: config/node/frontend
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-name: Checkout
-      uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: config/node/frontend/package-lock.json
 
+      - name: Install dependencies
+        run: npm ci
 
-name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-        cache: npm
-        cache-dependency-path: config/node/frontend/package-lock.json
+      - name: Build
+        run: npm run build
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
-name: Install dependencies
-      run: npm ci
-
-
-name: Build
-      run: npm run build
-
-
-name: Setup Pages
-      uses: actions/configure-pages@v4
-
-
-name: Upload Pages artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: config/node/frontend/build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: config/node/frontend/build
 
   deploy:
     environment:
@@ -61,8 +54,6 @@ name: Upload Pages artifact
     needs: build
 
     steps:
-
-name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
-deploy
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
