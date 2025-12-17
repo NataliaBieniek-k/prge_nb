@@ -1,8 +1,9 @@
 name: build and push and deploy
+
 on:
   push:
     branches:
-    - env-test
+      - env-test
 
 permissions:
   contents: read
@@ -12,17 +13,15 @@ jobs:
   build-and-push:
     name: Build & Push
     runs-on:
-      -self-hosted
+      - self-hosted
 
     steps:
       - uses: actions/checkout@v3
 
       - name: uruchom środowisko docker-compose
         env:
-          #DB
-        POSTGRES_DB: ${{secrets.POSTGRES_DB}}
-        POSTGRES_USER: ${{secrets.POSTGRES_USER}}
-        POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
-
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
           docker-compose -f ./docker-compose/docker-compose-prge-local.yaml -p remote-prge up --build -d
