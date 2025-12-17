@@ -11,12 +11,12 @@ permissions:
   contents: read
   packages: write
 
-
 jobs:
   build-and-push:
     name: Build & Push
     runs-on:
       - self-hosted
+    environment: ${{ github.ref_name }}
 
     steps:
       - uses: actions/checkout@v3
@@ -24,16 +24,13 @@ jobs:
       - name: Print
         run: echo 'witaj'
 
-
-
       - name: uruchom środowisko docker-compose
         env:
-          ENV_NAME: ${{github.ref_name}}
-          POSTGRES_PORT: $${{secrets.POSTGRES_PORT}}
-          #DB
-          POSTGRES_DB: ${{secrets.POSTGRES_DB}}
-          POSTGRES_USER: ${{secrets.POSTGRES_USER}}
-          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
-
+          ENV_NAME: ${{ github.ref_name }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          # DB
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
           docker-compose -f ./docker-compose/docker-compose-prge-remote.yml -p remote-prge up --build -d
