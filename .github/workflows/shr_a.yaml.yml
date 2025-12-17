@@ -1,0 +1,14 @@
+name: build and push and deploy
+on:
+  push:
+    branches:
+      - env-test
+permissions:
+  content: read
+  package: write
+
+jobs:
+  build-and-push:
+    name: Build & Push
+    runs-on:
+      - self-hosted
