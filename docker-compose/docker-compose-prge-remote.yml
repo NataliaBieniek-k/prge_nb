@@ -1,5 +1,5 @@
 x-environment:
-  #DB
+  # DB
   - &env-postgres-db POSTGRES_DB=${POSTGRES_DB}
   - &env-postgres-user POSTGRES_USER=${POSTGRES_USER}
   - &env-postgres-password POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -30,6 +30,27 @@ services:
       - ${GEOSERVER_PORT}:8080
     volumes:
       - ../.tmp/data-${ENV_NAME}:/opt/geoserver_data
+    depends_on:
+      - postgis
+
+  fastapi:
+    build:
+      context: ..
+      dockerfile: docker/fastapi/Dockerfile
+    image: 'prge_2025_fastapi'
+    container_name: prge-2025-fastapi-${ENV_NAME}
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./config/fastapi:/app
+    depends_on:
+      - postgis
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgis
+      - POSTGRES_PORT=5432
 
 volumes:
   postgis-prge-2025-data:
