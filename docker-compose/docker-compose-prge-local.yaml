@@ -19,6 +19,11 @@ services:
       - 5443:5432
     volumes:
       - postgis-prge-2025-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   geoserver:
     build:
@@ -31,6 +36,9 @@ services:
     volumes:
       - ../.tmp/data:/opt/geoserver_data
       - ../.tmp/geoserver-config:/opt/geoserver/data_dir
+    depends_on:
+      postgis:
+        condition: service_healthy
 
   fastapi:
     build:
@@ -42,9 +50,15 @@ services:
       - *env-postgres-db
       - *env-postgres-user
       - *env-postgres-password
+      - POSTGRES_HOST=postgis
+      - POSTGRES_PORT=5432
     ports:
       - 10000:10000
-
+    volumes:
+      - ../config/fastapi:/app
+    depends_on:
+      postgis:
+        condition: service_healthy
 
 volumes:
   postgis-prge-2025-data:
