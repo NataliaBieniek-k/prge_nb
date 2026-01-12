@@ -1,20 +1,21 @@
 from fastapi import FastAPI
-from app.routers.static_content import router as static_router
+from app.routers.static_content import router
 from app.routers.db_insert import router_insert
+from app.routers.dynamic_content import router_get_users
 
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="Mapbook API")
 
-@app.get("/")
-async def root():
-    return {
-        "message": "Mapbook API",
-        "status": "running",
-        "docs": "/docs"
-    }
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get("/health")
-async def health():
-    return {"status": "healthy"}
 
-app.include_router(static_router, prefix="/app", tags=["Static"])
-app.include_router(router_insert, prefix="/app", tags=["Database"])
+
+app.include_router(router, prefix="/app")
+app.include_router(router_insert, prefix="/app")
+app.include_router(router_get_users, prefix="/app")
