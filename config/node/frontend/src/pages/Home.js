@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 function Home(props) {
     return (
         <div className='Home'>
-        <h1 classname='home_title'>GEOPORTAL</h1>
+        <h1 className='home_title'>GEOPORTAL</h1>
 
             <Typography className='home_subtitle'>
                 Geoportal tematyczny poświęcony danym przestrzennym.
