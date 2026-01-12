@@ -1,49 +1,48 @@
-from fastapi import APIRouter, HTTPException
-from sqlalchemy import create_engine, text
+from fastapi import APIRouter
 from pydantic import BaseModel
-import os
+from sqlalchemy import create_engine, text
+
+from app.settings import db_name, db_user, db_password
 
 router_insert = APIRouter()
 
 
-class UserRequest(BaseModel):
+def connect_to_db(db_name: str, db_user: str, db_password: str):
+    return create_engine(
+        f"postgresql://{db_user}:{db_password}@postgis:5432/{db_name}"
+    )
+
+
+class UserData(BaseModel):
     name: str
     posts: int
     location: str
 
 
-def connect_to_db():
-    db_host = os.getenv("POSTGRES_HOST", "postgis")
-    db_port = "5432"
-    db_name = os.getenv("POSTGRES_DB", "postgres")
-    db_user = os.getenv("POSTGRES_USER", "postgres")
-    db_password = os.getenv("POSTGRES_PASSWORD", "postgres")
-
-    connection_string = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-    print(f"Connecting to: postgresql://{db_user}:***@{db_host}:{db_port}/{db_name}")
-    return create_engine(connection_string)
-
-
 @router_insert.post("/insert_user")
-async def insert_user(request: UserRequest):
+async def insert_user(user: UserData):
     try:
-        db_connection = connect_to_db()
+        db_connection = connect_to_db(db_name=db_name, db_user=db_user, db_password=db_password)
+
+        params = {
+            "name": user.name,
+            "posts": user.posts,
+            "location": user.location
+        }
 
         sql_query = text("""
-                         INSERT INTO public.users (name, posts, location)
-                         VALUES (:name, :posts, :location)
+                         insert into users (name, posts, location)
+                         values (:name, :posts, :location); \
                          """)
 
         with db_connection.connect() as conn:
-            result = conn.execute(sql_query, {
-                "name": request.name,
-                "posts": request.posts,
-                "location": request.location
-            })
+            result = conn.execute(sql_query, params)
             conn.commit()
+            print(result)
 
-        return {"status": "success", "message": "User inserted"}
 
     except Exception as e:
-        print(f"Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        print(e)
+        raise e
+
+    return {"status": 1}
