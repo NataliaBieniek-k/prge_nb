@@ -4,7 +4,7 @@ LABEL maintainer="nb"
 
 WORKDIR /app
 
-COPY config/node/frontend/package.json config/node/frontend/package-lock.json ./
+COPY config/node/frontend/package.json config/node/frontend/package-lock.json .
 RUN npm install
 
 COPY config/node/frontend .

@@ -29,7 +29,33 @@ services:
     ports:
       - ${GEOSERVER_PORT}:8080
     volumes:
-      - ../.tmp/data-${ENV_NAME}:/opt/geoserver_data
+      - geoserver-data:/opt/geoserver_data
+#      - ../.tmp/data-${ENV_NAME}:/opt/geoserver_data
+
+
+  fastapi:
+    build:
+      context: ..
+      dockerfile: docker/fastapi/Dockerfile
+    image: "prge_2025_fastapi"
+    container_name: prge_2025_fastapi-${ENV_NAME}
+    environment:
+      - *env-postgres-db
+      - *env-postgres-user
+      - *env-postgres-password
+    ports:
+      - ${FASTAPI_PORT}:10000
+
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: docker/nginx/Dockerfile_local
+    image: 'prge_2025_nginx'
+    container_name: prge_2025_nginx-${ENV_NAME}
+    ports:
+      - 8085:80
 
 volumes:
   postgis-prge-2025-data:
+  geoserver-data:
