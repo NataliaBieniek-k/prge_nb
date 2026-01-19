@@ -5,6 +5,7 @@ import View from "ol/View";
 import OSM from "ol/source/OSM";
 import {useGeographic} from "ol/proj";
 import "ol/ol.css"
+import {TileWMS} from 'ol/source'
 
 function MapComponent(props) {
     const mapRef = useRef(null);
@@ -16,8 +17,23 @@ function MapComponent(props) {
             layers: [
                 new TileLayer({
                     source: new OSM(),
+                }),
+
+                new TileLayer({
+                    //http://localhost:9000/geoserver/ne/wms?service=WMS&version=1.1.0&request=GetMap&layers=ne%3Acountries&bbox=-180.0%2C-90.0%2C180.0%2C83.64513&width=768&height=370&srs=EPSG%3A4326&styles=&format=application/openlayers
+                    source: new TileWMS({
+                        url: 'http://localhost:9000/geoserver/ne/wms?',
+                        params: {
+                            "layers": "ne:countries",
+                            "TILED": true,
+                        },
+                        serverType: "geoserver",
+                        transition: 5000,
+                    })
                 })
             ],
+
+
             view: new View({
                 center: ([21, 52]),
                 zoom: 6,
