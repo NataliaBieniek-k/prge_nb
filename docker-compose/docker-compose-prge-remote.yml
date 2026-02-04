@@ -30,7 +30,6 @@ services:
       - ${GEOSERVER_PORT}:8080
     volumes:
       - geoserver-data:/opt/geoserver_data
-#      - ../.tmp/data-${ENV_NAME}:/opt/geoserver_data
 
 
   fastapi:

@@ -1,16 +1,15 @@
-import './styles/styles.scss';
-
-import {Suspense} from 'react';
+import React, {Suspense} from 'react';
 import {RouterProvider} from 'react-router-dom';
-import {CircularProgress} from '@mui/material';
-import routes from "./routes/Router";
+import routes from './routes/Router';
+import './styles/styles.scss';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function App() {
   return (
     <div className="app">
         <Suspense
             fallback={
-            <CircularProgress color="success" />
+                <CircularProgress color="success" />
             }
         >
             <RouterProvider router={routes}/>

@@ -1,17 +1,24 @@
 .app{
   background: $background-color;
   color: $secondary-color;
-  height: 100vh;
+  min-height: 100vh;
   font-family: 'Lato';
 
-  @include flex-center;
 
   .home_button {
     color: Blue;
-  width: fit-content;
+    width: fit-content;
     margin-top: 2vh;
   }
-}.mapComponent{
+}
+
+.Home {
+  height: 100vh;
+  @include flex-center;
+  flex-direction: column;
+}
+
+.mapComponent{
   height: 100vh;
   width: 100vw;
- }
+}
